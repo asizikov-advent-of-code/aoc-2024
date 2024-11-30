@@ -2,7 +2,7 @@ using System.Diagnostics;
 using aoc_2024;
 using aoc_2024.Solvers;
 
-var dayNumberOverride = "";
+var dayNumberOverride = "01";
 var symbols = new[] { "🎄", "☃️", "🎅🏻", "🎁", "🛷", "📅", "❄️", "☃️" };
 
 var dayNumber = dayNumberOverride == "" ? DateTime.Now.Day.ToString("00") : dayNumberOverride;
