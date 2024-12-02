@@ -6,26 +6,17 @@ public class SolverDay02 : ISolver {
         var answer = 0;
         foreach (var line in input) {
             var levels = line.Split(' ', StringSplitOptions.RemoveEmptyEntries).Select(int.Parse).ToArray();
-            var isUnsafe = false;
-            var isIncreasing = levels[0] < levels[1];
-            for (var i = 0; i < levels.Length - 1; i++) {
-                if (levels[i] == levels[i + 1]) {
-                    isUnsafe = true;
-                    break;
+            var isUnsafe = ValidateLevels(levels);
+            if (isUnsafe) {
+                for (var i = 0; i < levels.Length; i++) {
+                    var copy = new int[levels.Length - 1];
+                    Array.Copy(levels, 0, copy, 0, i);
+                    Array.Copy(levels, i + 1, copy, i, levels.Length - i - 1);
+                    if (!ValidateLevels(copy)) {
+                        isUnsafe = false;
+                        break;
+                    }
                 }
-                if (isIncreasing && levels[i] > levels[i + 1]) {
-                    isUnsafe = true;
-                    break;
-                }
-                if (!isIncreasing && levels[i] < levels[i + 1]) {
-                    isUnsafe = true;
-                    break;
-                }
-                if (Math.Abs(levels[i] - levels[i + 1]) > 3) {
-                    isUnsafe = true;
-                    break;
-                }
-                
             }
             if (!isUnsafe) {
                 answer++;
@@ -34,5 +25,30 @@ public class SolverDay02 : ISolver {
 
 
         Console.WriteLine($"Answer: {answer}");
+    }
+
+    private bool ValidateLevels(int[] levels) {
+        var isUnsafe = false;
+        var isIncreasing = levels[0] < levels[1];
+        for (var i = 0; i < levels.Length - 1; i++) {
+            if (levels[i] == levels[i + 1]) {
+                isUnsafe = true;
+                break;
+            }
+            if (isIncreasing && levels[i] > levels[i + 1]) {
+                isUnsafe = true;
+                break;
+            }
+            if (!isIncreasing && levels[i] < levels[i + 1]) {
+                isUnsafe = true;
+                break;
+            }
+            if (Math.Abs(levels[i] - levels[i + 1]) > 3) {
+                isUnsafe = true;
+                break;
+            }
+        }
+
+        return isUnsafe;
     }
 }
