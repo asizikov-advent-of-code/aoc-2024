@@ -18,37 +18,25 @@ public class SolverDay02 : ISolver {
                     }
                 }
             }
+
             if (!isUnsafe) {
                 answer++;
             }
         }
-
-
+        
         Console.WriteLine($"Answer: {answer}");
     }
 
     private bool ValidateLevels(int[] levels) {
-        var isUnsafe = false;
-        var isIncreasing = levels[0] < levels[1];
         for (var i = 0; i < levels.Length - 1; i++) {
-            if (levels[i] == levels[i + 1]) {
-                isUnsafe = true;
-                break;
-            }
-            if (isIncreasing && levels[i] > levels[i + 1]) {
-                isUnsafe = true;
-                break;
-            }
-            if (!isIncreasing && levels[i] < levels[i + 1]) {
-                isUnsafe = true;
-                break;
-            }
-            if (Math.Abs(levels[i] - levels[i + 1]) > 3) {
-                isUnsafe = true;
-                break;
+            if (levels[i] == levels[i + 1] ||
+                Math.Abs(levels[i] - levels[i + 1]) > 3 ||
+                (levels[0] < levels[1] && levels[i] > levels[i + 1]) ||
+                (levels[0] > levels[1] && levels[i] < levels[i + 1])) {
+                return true;
             }
         }
 
-        return isUnsafe;
+        return false;
     }
 }
