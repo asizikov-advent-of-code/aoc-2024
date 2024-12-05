@@ -18,8 +18,9 @@ public class SolverDay05 : ISolver {
                 
             } else if (line.Contains(',')) {
                 var parts = line.Split(',').Select(int.Parse).ToList();
-                if (ValidateOrder(parts)) {
-                    var middleElement = parts[parts.Count / 2];
+                var (sorted, seq) = ValidateOrder(parts);
+                if (!sorted) {
+                    var middleElement = seq[seq.Count / 2];
                     answer += middleElement;
                     Console.WriteLine($"Middle element: {middleElement}");
                 }
@@ -28,15 +29,14 @@ public class SolverDay05 : ISolver {
         
         Console.WriteLine($"Answer: {answer}");
         
-        bool ValidateOrder(List<int> sequence) {
+        (bool sorted, List<int> seq) ValidateOrder(List<int> sequence) {
             var sorted = new List<int>(sequence);
             sorted.Sort((a, b) => {
                 if (order[a].Contains(b)) return -1;
-                if (order[b].Contains(a)) return 1;
-                return 0;
+                return order[b].Contains(a) ? 1 : 0;
             });
             
-            return sequence.SequenceEqual(sorted);
+            return (sequence.SequenceEqual(sorted), sorted);
         }
     }
 }
