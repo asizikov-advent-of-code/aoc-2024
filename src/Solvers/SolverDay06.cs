@@ -1,5 +1,3 @@
-using System.Security;
-
 namespace aoc_2024.Solvers;
 
 public class SolverDay06 : ISolver {
@@ -61,4 +59,3 @@ public class SolverDay06 : ISolver {
         }
     }
 }
-
