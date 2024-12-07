@@ -12,19 +12,18 @@ public class SolverDay07 : ISolver {
                 answer+= target;
             }
         }
-
-
-
+        
         Console.WriteLine($"Answer: {answer}");
 
 
         bool CanBuild(long target, Span<long> values, long aggregate) {
             if(values.Length is 0) return target == aggregate;
             if(aggregate is 0) return CanBuild(target, values[1..], values[0]);
-
+            
             return
                 CanBuild(target, values[1..], checked(aggregate + values[0]))
-                || CanBuild(target, values[1..], checked(aggregate * values[0]));
+                || CanBuild(target, values[1..], checked(aggregate * values[0]))
+                || CanBuild(target, values[1..], checked(aggregate * (long)Math.Pow(10, (int)Math.Log10(values[0]) + 1) + values[0]));
 
         }
     }
