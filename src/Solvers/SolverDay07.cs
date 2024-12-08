@@ -4,6 +4,7 @@ public class SolverDay07 : ISolver {
     [PuzzleInput("07-01")]
     public void Solve(string[] input) {
         var answer = 0L;
+
         foreach (var line in input) {
             var parts = line.Split(": ");
             var target = long.Parse(parts[0]);
@@ -24,7 +25,6 @@ public class SolverDay07 : ISolver {
                 CanBuild(target, values[1..], checked(aggregate + values[0]))
                 || CanBuild(target, values[1..], checked(aggregate * values[0]))
                 || CanBuild(target, values[1..], checked(aggregate * (long)Math.Pow(10, (int)Math.Log10(values[0]) + 1) + values[0]));
-
         }
     }
 }
