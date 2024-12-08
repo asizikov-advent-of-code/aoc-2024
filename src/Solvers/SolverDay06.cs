@@ -52,7 +52,6 @@ public class SolverDay06 : ISolver {
             }
 
             if (input[nextPos.r][nextPos.c] == '#') {
-                var nextDir = (dir.dc, -dir.dr);
                 Walk(nextPosRotated.r, nextPosRotated.c, nextDirRotated);
             }
             else Walk(nextPos.r, nextPos.c, dir);
