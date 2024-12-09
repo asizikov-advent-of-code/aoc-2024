@@ -1,53 +1,79 @@
+using System.Text;
+
 namespace aoc_2024.Solvers;
 
 public class SolverDay09 : ISolver {
     [PuzzleInput("09-01")]
     public void Solve(string[] input) {
         var line = input[0];
-        var queue = new LinkedList<(int id, int count)>();
-        for (var i = 0; i < line.Length; i+=2) {
-            queue.AddLast((i / 2, line[i] - '0'));
+        var files = new LinkedList<(int id, int count, int size)>();
+        var spaces = new LinkedList<(int size, int start)>();
+        var start = 0;
+        for (var i = 0; i < line.Length; i += 2) {
+            files.AddLast((i / 2, line[i] - '0', start));
+            start += line[i] - '0';
+            if (i + 1 >= line.Length) break;
+            spaces.AddLast((line[i + 1] - '0', start));
+            start += line[i + 1] - '0';
         }
-        
+
+        var result = new PriorityQueue<(int id, int pos), int>();
+
+        var right = files.Last;
+
+        while (right is not null) {
+            var (id, size, pos) = right.Value;
+
+            var firstSpace = spaces.First;
+            while (firstSpace is not null && firstSpace.Value.size < size && firstSpace.Value.start < pos) {
+                firstSpace = firstSpace.Next;
+            }
+
+            if (firstSpace is not null && firstSpace.Value.start < pos) {
+                var (spaceSize, spacePos) = firstSpace.Value;
+                var newStart = spacePos;
+                while (size-- > 0) {
+                    result.Enqueue((id, newStart), newStart++);
+                    spaceSize--;
+                }
+
+                var tmp = right.Previous;
+                files.Remove(right);
+                right = tmp;
+
+                if (spaceSize == 0) {
+                    spaces.Remove(firstSpace);
+                }
+                else {
+                    firstSpace.Value = (spaceSize, newStart);
+                }
+            }
+            else {
+                right = right.Previous;
+            }
+        }
+
+
+        while (files.Count > 0) {
+            var (id, count, pos) = files.First.Value;
+            files.RemoveFirst();
+            while (count-- > 0) {
+                result.Enqueue((id, pos), pos++);
+            }
+        }
+
         var answer = 0L;
-        var leftPos = 0;
-        
-        using var leftEnum = GetLeft().GetEnumerator();
-        using var rightEnum = GetRight().GetEnumerator();
-        
         var p = 0;
-        while(queue.Count > 0 && p < line.Length-1) {
-            for (var d = 0; d < line[p] - '0' && queue.Count >0; d++) {
-                leftEnum.MoveNext();
-                answer += leftPos * leftEnum.Current;
-                leftPos++;
+        while (result.Count > 0) {
+            var (id, pos) = result.Dequeue();
+            while (p < pos) {
+                p++;
             }
-            for (var d = 0; d < line[p+1] - '0' && queue.Count > 0; d++) {
-                rightEnum.MoveNext();
-                answer += leftPos * rightEnum.Current;
-                leftPos++;
-            }
-            p+=2;
 
+            answer += id * p;
+            p++;
         }
+
         Console.WriteLine($"Answer: {answer}");
-
-        IEnumerable<int> GetLeft() {
-           while (queue.Count > 0) {
-               var (id, count) = queue.First.Value;
-               queue.RemoveFirst();
-               if (count > 1) queue.AddFirst((id, count - 1));
-               yield return id;
-           }
-        }
-        
-        IEnumerable<int> GetRight() {
-            while (queue.Count > 0) {
-                var (id, count) = queue.Last.Value;
-                queue.RemoveLast();
-                if (count > 1) queue.AddLast((id, count - 1));
-                yield return id;
-            }
-        }
     }
 }
