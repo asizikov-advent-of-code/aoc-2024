@@ -52,8 +52,7 @@ public class SolverDay09 : ISolver {
                 right = right.Previous;
             }
         }
-
-
+        
         while (files.Count > 0) {
             var (id, count, pos) = files.First.Value;
             files.RemoveFirst();
