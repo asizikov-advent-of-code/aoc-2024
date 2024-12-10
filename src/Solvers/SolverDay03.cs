@@ -1,4 +1,3 @@
-using System.Security.Cryptography.X509Certificates;
 using System.Text.RegularExpressions;
 
 namespace aoc_2024.Solvers;
@@ -9,7 +8,6 @@ public class SolverDay03 : ISolver {
         var answer = 0L;
         var enabled = true;
         foreach (var inputLine in input) {
-            
             var ( sum, state) = ParseLine(inputLine, enabled);
             answer += sum;
             enabled = state;

@@ -1,18 +1,13 @@
-using System.Security;
+using aoc_2024.Utils;
 
 namespace aoc_2024.Solvers;
 
 public class SolverDay10 : ISolver {
     [PuzzleInput("10-01")]
     public void Solve(string[] input) {
-        var answer = 0L;
-        for (var r = 0; r < input.Length; r++) {
-            for (var c = 0; c < input[r].Length; c++) {
-                if (input[r][c] != '0') continue;
-                answer += Walk(r, c);
-            }
-        }
-
+        var answer = input.ScanFor('0')
+            .Aggregate(0L, (acc, scan) => acc + Walk(scan.r, scan.c));
+        
         Console.WriteLine($"Answer: {answer}");
 
         int Walk(int cr, int cc) {
@@ -21,8 +16,7 @@ public class SolverDay10 : ISolver {
             queue.Enqueue((cr, cc, input[cr][cc]));
             while (queue.Count > 0) {
                 var (r, c,val) = queue.Dequeue();
-                if (r < 0 || r >= input.Length || c < 0 || c >= input[r].Length) continue;
-                if (input[r][c] != val) continue;
+                if (!input.IsInBounds(r, c) || input[r][c] != val) continue;
                 if (input[r][c] == '9') {
                     score++;
                     continue;
