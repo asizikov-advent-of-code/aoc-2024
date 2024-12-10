@@ -17,20 +17,18 @@ public class SolverDay10 : ISolver {
 
         int Walk(int cr, int cc) {
             var score = 0;
-            var queue = new Queue<(int r, int c, int steps, char value)>();
-            queue.Enqueue((cr, cc,  0, (char)('0'-1)));
-            var visited = new HashSet<(int r, int c)>();
+            var queue = new Queue<(int r, int c, char val)>();
+            queue.Enqueue((cr, cc, input[cr][cc]));
             while (queue.Count > 0) {
-                var (r, c, s, val) = queue.Dequeue();
-                if (r < 0 || r >= input.Length || c < 0 || c >= input[r].Length || val + 1 != input[r][c]) continue;
-                if (!visited.Add((r, c))) continue;
+                var (r, c,val) = queue.Dequeue();
+                if (r < 0 || r >= input.Length || c < 0 || c >= input[r].Length) continue;
+                if (input[r][c] != val) continue;
                 if (input[r][c] == '9') {
-                    score += 1;
+                    score++;
                     continue;
                 }
-                (int dr, int dc)[] dirs = [(0, 1), (0, -1), (1, 0), (-1, 0)];
-                foreach (var (dr, dc) in dirs) {
-                    queue.Enqueue((r + dr, c + dc, s + 1, input[r][c]));
+                foreach (var (dr, dc) in new[] {(-1, 0), (1, 0), (0, -1), (0, 1)}) {
+                    queue.Enqueue((r + dr, c + dc, (char)(val + 1)));
                 }
             }
             return score;
