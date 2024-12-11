@@ -1,18 +1,15 @@
+using aoc_2024.Utils;
+
 namespace aoc_2024.Solvers;
 
 public class SolverDay06 : ISolver {
     [PuzzleInput("06-01")]
     public void Solve(string[] input) {
-        var grid = input.Select(x => x.ToCharArray()).ToArray();
         var path = new HashSet<(int r, int c)>();
-
         (int r, int c) start = (0, 0);
-        for (var r = 0; r < input.Length; r++) {
-            for (var c = 0; c < input[r].Length; c++) {
-                if (input[r][c] != '^') continue;
-                start = (r, c);
-                Walk(r, c, (-1, 0));
-            }
+        foreach (var (r, c, val) in input.ScanFor('^')) {
+            start = (r, c);
+            Walk(r, c, (-1, 0));
         }
 
         var obstacles = new HashSet<(int r, int c)>();
@@ -30,9 +27,7 @@ public class SolverDay06 : ISolver {
         bool IsLoop(int r, int c, (int dr, int dc) dir) {
             if (!positions.Add((r, c, dir.dr, dir.dc))) return true;
             (int r, int c) nextPos = (r + dir.dr, c + dir.dc);
-            if (nextPos.r < 0 || nextPos.r >= input.Length || nextPos.c < 0 || nextPos.c >= input[nextPos.r].Length) {
-                return false;
-            }
+            if (!input.IsInBounds(nextPos)) return false;
 
             if (input[nextPos.r][nextPos.c] == '#' || obstacle == nextPos) {
                 var nextDir = (dir.dc, -dir.dr);
@@ -47,9 +42,7 @@ public class SolverDay06 : ISolver {
             var nextDirRotated = (dir.dc, -dir.dr);
             (int r, int c) nextPosRotated = (r + dir.dc, c - dir.dr);
 
-            if (nextPos.r < 0 || nextPos.r >= input.Length || nextPos.c < 0 || nextPos.c >= input[nextPos.r].Length) {
-                return;
-            }
+            if (!input.IsInBounds(nextPos)) return;
 
             if (input[nextPos.r][nextPos.c] == '#') {
                 Walk(nextPosRotated.r, nextPosRotated.c, nextDirRotated);

@@ -1,3 +1,5 @@
+using aoc_2024.Utils;
+
 namespace aoc_2024.Solvers;
 
 public class SolverDay08 : ISolver {
@@ -5,12 +7,9 @@ public class SolverDay08 : ISolver {
     public void Solve(string[] input) {
         
         var antennas = new Dictionary<char, List<(int r, int c)>>();
-        for (var r = 0; r < input.Length; r++) {
-            for (var c = 0; c < input[r].Length; c++) {
-                if (input[r][c] == '.') continue;
-                antennas.TryAdd(input[r][c], []);
-                antennas[input[r][c]].Add((r, c));
-            }
+        foreach (var (r, c, val) in input.ScanExcept('.')) {
+            antennas.TryAdd(val, []);
+            antennas[val].Add((r, c));
         }
 
         var antinodes = new HashSet<(int r, int c)>();
