@@ -13,38 +13,26 @@ public class SolverDay13 : ISolver {
             var buttonB = input[i + 1].Split(": ")[1].Split(", ");
             var prize = input[i + 2].Split(": ")[1].Split(", ");
 
-            (int dr, int dc) dirA = (int.Parse(dirRegEx.Match(buttonA[0]).Groups[1].Value), int.Parse(dirRegEx.Match(buttonA[1]).Groups[1].Value));
-            (int dr, int dc) dirB = (int.Parse(dirRegEx.Match(buttonB[0]).Groups[1].Value), int.Parse(dirRegEx.Match(buttonB[1]).Groups[1].Value));
+            (long dr, long dc) dirA = (long.Parse(dirRegEx.Match(buttonA[0]).Groups[1].Value), long.Parse(dirRegEx.Match(buttonA[1]).Groups[1].Value));
+            (long dr, long dc) dirB = (long.Parse(dirRegEx.Match(buttonB[0]).Groups[1].Value), long.Parse(dirRegEx.Match(buttonB[1]).Groups[1].Value));
 
-            (int r, int c) prizePos = (int.Parse(posRegEx.Match(prize[0]).Groups[1].Value), int.Parse(posRegEx.Match(prize[1]).Groups[1].Value));
+            (long r, long c) prizePos = (10000000000000 + long.Parse(posRegEx.Match(prize[0]).Groups[1].Value), 10000000000000 + long.Parse(posRegEx.Match(prize[1]).Groups[1].Value));
 
-            var cost = Greedy([dirA, dirB], prizePos);
+            var cost = Caculate([dirA, dirB], prizePos);
             if (cost != -1) {
-                Console.WriteLine($"Prize: {prizePos.r}, {prizePos.c}, Button A: {dirA.dr}, {dirA.dc}, Button B: {dirB.dr}, {dirB.dc}");
-                Console.WriteLine($"Cost: {cost}");
                 answer += cost;
             }
         }
 
-        Console.WriteLine($"Answer: {answer}");
-
-        int Greedy((int dr, int dc)[] dirs, (int r, int c) prizePos) {
-            var minCost = int.MaxValue;
-
-            for (var a = 0; a < 100; a++)
-            for (var b = 0; b < 100; b++) {
-                var calculatedR = a * dirs[0].dr + b * dirs[1].dr;
-                var calculatedC = a * dirs[0].dc + b * dirs[1].dc;
-
-                if (calculatedR == prizePos.r && calculatedC == prizePos.c) {
-                    var cost = a * 3 + b;
-                    if (cost < minCost) {
-                        minCost = cost;
-                    }
-                }
-            }
-
-            return minCost == int.MaxValue ? -1 : minCost;
+        Console.WriteLine($"Answer: {answer}"); 
+        
+        long Caculate((long dr, long dc)[] dirs, (long r, long c) prizePos) {
+            var a = (double)(prizePos.r * dirs[1].dc - prizePos.c * dirs[1].dr) / (dirs[0].dr * dirs[1].dc - dirs[0].dc * dirs[1].dr);
+            var b = (double)(prizePos.r * dirs[0].dc - prizePos.c * dirs[0].dr) / (dirs[1].dr * dirs[0].dc - dirs[1].dc * dirs[0].dr);
+            
+            if (Math.Floor(a) != a || Math.Floor(b) != b || a < 0 || b < 0) return -1;
+            return (long)a * 3 + (long)b;
+            
         }
     }
 }
