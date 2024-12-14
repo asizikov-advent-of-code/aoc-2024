@@ -16,65 +16,64 @@ public class SolverDay14 : ISolver {
 
         // var (roomR, roomC) = (7, 11);
         var (roomR, roomC) = (103, 101);
-        var iterations = 100;
-        var next = new List<(int c, int r, int dc, int dr)>();
-        var quadrants = new[] { 0L, 0L, 0L, 0L };
-        foreach (var robot in robots) {
-            var r = (robot.r + robot.dr * iterations) % roomR;
-            if (r < 0) r += roomR;
-            var c = (robot.c + robot.dc * iterations) % roomC;
-            if (c < 0) c += roomC;
-            next.Add((c, r, robot.dc, robot.dr));
-            var midleRow = roomR / 2;
-            var midleCol = roomC / 2;
-            if (r < midleRow && c < midleCol) quadrants[0]++;
-            if (r < midleRow && c > midleCol) quadrants[1]++;
-            if (r > midleRow && c < midleCol) quadrants[2]++;
-            if (r > midleRow && c > midleCol) quadrants[3]++;
-        }
-        robots = next;
-        
-        var finalRoom = new char[roomR, roomC];
-        for (var r = 0; r < roomR; r++) {
-            for (var c = 0; c < roomC; c++) {
-                finalRoom[r, c] = '.';
+        for (var iterations = 1; iterations < 8913; iterations++) {
+            var next = new List<(int c, int r, int dc, int dr)>();
+            foreach (var robot in robots) {
+                var r = (robot.r + robot.dr * iterations) % roomR;
+                if (r < 0) r += roomR;
+                var c = (robot.c + robot.dc * iterations) % roomC;
+                if (c < 0) c += roomC;
+                next.Add((c, r, robot.dc, robot.dr));
             }
-        }
-        foreach (var robot in robots) {
-            if (finalRoom[robot.r, robot.c] == '.') finalRoom[robot.r, robot.c] = '1';
-            else finalRoom[robot.r, robot.c] = (char)(finalRoom[robot.r, robot.c]+ 1);
-        }
-        
-        for (var r = 0; r < roomR; r++) {
-            for (var c = 0; c < roomC; c++) {
-                Console.Write(finalRoom[r, c]);
-            }
-            Console.WriteLine();
-        }
-        Console.WriteLine();
-        
-        for (var r = 0; r < roomR; r++) {
-            if (r == roomR /2) {
+
+            robots = next;
+
+            var finalRoom = new char[roomR, roomC];
+            for (var r = 0; r < roomR; r++) {
                 for (var c = 0; c < roomC; c++) {
-                    if (c == roomC / 2) Console.Write("+");
-                    else Console.Write("-");
+                    finalRoom[r, c] = '.';
                 }
             }
-            else {
-                for (var c = 0; c < roomC; c++) {
-                    if (c == roomC / 2) Console.Write("|");
-                    else
-                    Console.Write(finalRoom[r, c]);
-                }                    
+
+            foreach (var robot in robots) {
+                finalRoom[robot.r, robot.c] = '#';
             }
             
-            Console.WriteLine();
-        }
-        
-        Console.WriteLine($"Quadrants: {string.Join(", ", quadrants)}");
-        
-        var answer = quadrants[0] * quadrants[1] * quadrants[2] * quadrants[3];
+            // check if we have triangle share
+            /*
+             *     .#.
+             *    .###.
+             *   .#####.
+             */
+            
+            var count = 0;
+            for (var r = 0; r < roomR - 2; r++) {
+                for (var c = 0; c < roomC - 2; c++) {
+                    if (r + 2 >= roomR || c + 2 >= roomC || r - 2 < 0 || c - 2 < 0) {
+                        continue;
+                    }
+                    if (finalRoom[r, c] == '#' && finalRoom[r + 1, c - 1] == '#' && finalRoom[r + 1, c + 1] == '#' && finalRoom[r + 2, c - 2] == '#' && finalRoom[r + 2, c - 1] == '#' && finalRoom[r + 2, c] == '#' && finalRoom[r + 2, c + 1] == '#' && finalRoom[r + 2, c + 2] == '#') {
+                        count++;
+                    }
+                }
+            }
+            
+            if (count == 0 ) {
+                continue;
+            }
+            
+            Console.WriteLine($"Iteration: {iterations}");
+            Console.WriteLine("====================================");
+            for (var r = 0; r < roomR; r++) {
+                for (var c = 0; c < roomC; c++) {
+                    Console.Write(finalRoom[r, c]);
+                }
 
-        Console.WriteLine($"Answer: {answer}");
+                Console.WriteLine();
+            }
+
+            Console.WriteLine("====================================");
+
+        }
     }
 }
