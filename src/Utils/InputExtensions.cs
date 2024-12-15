@@ -17,6 +17,14 @@ public static class InputExtensions {
         }
     }
     
+    public static IEnumerable<(int r, int c, char val)> ScanFor(this IList<char[]> grid, char val) {
+        for (var r = 0; r < grid.Count; r++) {
+            for (var c = 0; c < grid[r].Length; c++) {
+                if (grid[r][c] == val) yield return (r, c, grid[r][c]);
+            }
+        }
+    }
+    
     public static IEnumerable<(int r, int c, char val)> ScanExcept(this string[] grid, params char[] vals) {
         for (var r = 0; r < grid.Length; r++) {
             for (var c = 0; c < grid[r].Length; c++) {
