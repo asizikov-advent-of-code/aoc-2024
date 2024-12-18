@@ -33,6 +33,9 @@ public static class InputExtensions {
         }
     }
     
+    public static bool IsInBounds(this char[][] grid, (int r, int c) pos) {
+        return pos.r >= 0 && pos.r < grid.Length && pos.c >= 0 && pos.c < grid[pos.r].Length;
+    }
     public static bool IsInBounds(this string[] grid, int r, int c) {
         return r >= 0 && r < grid.Length && c >= 0 && c < grid[r].Length;
     }
