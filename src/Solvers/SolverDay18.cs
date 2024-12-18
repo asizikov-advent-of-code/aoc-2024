@@ -20,13 +20,16 @@ public class SolverDay18 : ISolver {
             }
         }
         
-        var nanoseconds = 1024;
+        var nanoseconds = bytes.Count;
         for (var t = 0; t < nanoseconds; t++) {
             var b = bytes[t];
             grid[b.r][b.c] = '#';
+            if (Walk((0, 0), (gridSize.r - 1, gridSize.c - 1)) == -1) {
+                Console.WriteLine($"{b.r},{b.c}");
+                break;
+            }
+            
         }
-        
-        Walk((0,0), (gridSize.r-1, gridSize.c-1));
 
         int Walk((int r, int c) start, (int r, int c) end) {
             var visited = new HashSet<(int r, int c)>();
@@ -37,7 +40,6 @@ public class SolverDay18 : ISolver {
                 var current = queue.Dequeue();
                 if (!visited.Add(current.p)) continue;
                 if (current.p == end) {
-                    Console.WriteLine($"Found path in {current.steps} steps");
                     return current.steps;
                 }
 
