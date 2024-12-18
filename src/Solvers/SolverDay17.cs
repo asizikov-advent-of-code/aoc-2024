@@ -92,22 +92,22 @@ public class SolverDay17 : ISolver {
         }
 
         IEnumerable<long> FindAnswer(List<long> program, List<long> output) {
-            if (!output.Any()) {
+            if (output.Count is 0) {
                 yield return 0;
                 yield break;
             }
 
-            foreach (var ah in FindAnswer(program, output[1..])) {
-                for (var al = 0; al < 8; al++) {
-                    var a = ah * 8 + al;
+            foreach (var a in FindAnswer(program, output[1..])) {
+                for (var n = 0; n < 8; n++) {
+                    var option = a * 8 + n;
                     if (Run(
                             new Dictionary<char, long> {
-                                { 'A', a },
+                                { 'A', option },
                                 { 'B', 0 },
                                 { 'C', 0 }
                             }
                             , program).SequenceEqual(output)) {
-                        yield return a;
+                        yield return option;
                     }
                 }
             }
