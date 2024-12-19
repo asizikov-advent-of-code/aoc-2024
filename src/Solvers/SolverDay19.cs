@@ -9,28 +9,26 @@ public class SolverDay19 : ISolver {
             patterns.Add(input[i]);
         }
 
-        var answer = 0;
+        var answer = 0L;
         foreach (var pattern in patterns) {
             Console.WriteLine(pattern);
-            if (TryCompose(pattern, 0,new Dictionary<int, bool>())) answer++;
+            answer += TryCompose(pattern, 0, new Dictionary<int, long>());
         }
         Console.WriteLine(answer);
         
-        bool TryCompose(string pattern, int pos, Dictionary<int, bool> memo) {
-            if (pos >= pattern.Length) return true;
+        long TryCompose(string pattern, int pos, Dictionary<int, long> memo) {
+            if (pos >= pattern.Length) return 1;
             if (memo.ContainsKey(pos)) return memo[pos];
 
+            var ways = 0L;
             foreach (var substring in colors) {
                 if (substring.Length + pos > pattern.Length) continue;
                 if (pattern.Substring(pos, substring.Length) == substring) {
-                    if (TryCompose(pattern, pos + substring.Length, memo)) {
-                        memo[pos] = true;
-                        return true;
-                    }
+                    ways += TryCompose(pattern, pos + substring.Length, memo);
                 }
             }
-            memo[pos] = false;
-            return false;
+            memo[pos] = ways;
+            return ways;
         }
     }
 }
