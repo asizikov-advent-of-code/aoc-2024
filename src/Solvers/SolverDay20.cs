@@ -15,19 +15,17 @@ public class SolverDay20 : ISolver {
         for (var s = 0; s < path.Count-1; s++) {
             for (var e = s + 1; e < path.Count; e++) {
                 var dist = Math.Abs(path[s].r - path[e].r) + Math.Abs(path[s].c - path[e].c);
-                if (dist == 2) {
+                if (dist <= 20) {
                     var savedDist = e - (s + dist) ;
                     if (savedDist == 0) continue;
-                    saves.TryAdd(savedDist, new HashSet<((int, int ), (int, int))>());
-                    saves[savedDist].Add((path[s], path[e]));
-                    if (savedDist >= 100) answer++;    
+                    if (savedDist >= 100) {
+                        saves.TryAdd(savedDist, new HashSet<((int, int ), (int, int))>());
+                        saves[savedDist].Add((path[s], path[e]));
+                        answer++;
+                    }    
                 }
                 
             }
-        }
-
-        foreach (var pair in saves.OrderBy(x => x.Key)) {
-            Console.WriteLine($"{pair.Key}: {pair.Value.Count}");
         }
         
         Console.WriteLine(answer);
@@ -35,12 +33,10 @@ public class SolverDay20 : ISolver {
         List<(int r, int c)> Run((int r, int c) start) {
             var pathSoFar = new List<(int r, int c)>();
             var visited = new HashSet<(int r, int c)>();
-            // DFS
             DFS(start);
             return pathSoFar;
             void DFS((int r, int c) current) {
-                if (visited.Contains(current)) return;
-                visited.Add(current);
+                if (!visited.Add(current)) return;
                 pathSoFar.Add(current);
                 if (input[current.r][current.c] == 'E') return;
                 foreach ((int dr, int dc) dir in new[] { (0, 1), (0, -1), (1, 0), (-1, 0) }) {
