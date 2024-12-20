@@ -43,7 +43,7 @@ public class SolverDay18 : ISolver {
                     return current.steps;
                 }
 
-                foreach ((int dr, int dc) dir in new (int, int)[] { (0, 1), (0, -1), (1, 0), (-1, 0) }) {
+                foreach ((int dr, int dc) dir in new[] { (0, 1), (0, -1), (1, 0), (-1, 0) }) {
                     (int r, int c) next = (current.p.r + dir.dr, current.p.c + dir.dc);
                     if (grid.IsInBounds(next) == false || grid[next.r][next.c] == '#') continue;
                     queue.Enqueue((next, current.steps + 1));
